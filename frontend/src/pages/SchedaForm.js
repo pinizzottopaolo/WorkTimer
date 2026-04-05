@@ -244,18 +244,6 @@ const SchedaForm = () => {
             </div>
 
             <div>
-              <label className="block text-xs tracking-[0.2em] uppercase font-bold text-white/50 mb-2">N. Ordine Cliente</label>
-              <input
-                data-testid="ordine-cliente-input"
-                type="text"
-                value={formData.n_ordine_cliente}
-                onChange={(e) => setFormData(prev => ({ ...prev, n_ordine_cliente: e.target.value }))}
-                className="w-full bg-[#0A0A0A] border border-white/20 text-white rounded-sm px-3 py-2.5 focus:ring-1 focus:ring-[#007AFF] focus:border-[#007AFF] placeholder:text-white/30"
-                placeholder="Es: ORD-2024-001"
-              />
-            </div>
-
-            <div>
               <label className="block text-xs tracking-[0.2em] uppercase font-bold text-white/50 mb-2">N. Ordine Interno</label>
               <input
                 data-testid="ordine-interno-input"
