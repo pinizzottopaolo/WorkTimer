@@ -36,18 +36,18 @@ const Layout = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A]">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-[#141414] border-b border-white/10 sticky top-0 z-50">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="px-4 md:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#007AFF] rounded-sm flex items-center justify-center">
+              <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
                 <Clock size={24} weight="bold" className="text-white" />
               </div>
               <div className="hidden sm:block">
-                <h1 className="font-heading text-lg font-black uppercase tracking-tight text-white">WorkTimer</h1>
+                <h1 className="font-heading text-lg font-black uppercase tracking-tight text-gray-900">WorkTimer</h1>
               </div>
             </Link>
 
@@ -62,10 +62,10 @@ const Layout = ({ children }) => {
                     key={item.path}
                     to={item.path}
                     data-testid={`nav-${item.label.toLowerCase().replace(' ', '-')}`}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-sm text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       isActive 
-                        ? 'bg-[#007AFF] text-white' 
-                        : 'text-white/60 hover:text-white hover:bg-white/5'
+                        ? 'bg-blue-500 text-white' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                     }`}
                   >
                     <Icon size={18} weight={isActive ? 'fill' : 'regular'} />
@@ -80,30 +80,30 @@ const Layout = ({ children }) => {
               <DropdownMenuTrigger asChild>
                 <button 
                   data-testid="user-menu-trigger"
-                  className="flex items-center gap-2 px-3 py-2 rounded-sm hover:bg-white/5 transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
-                  <div className="w-8 h-8 bg-[#007AFF]/20 rounded-sm flex items-center justify-center">
-                    <UserCircle size={20} className="text-[#007AFF]" />
+                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <UserCircle size={20} className="text-blue-500" />
                   </div>
-                  <span className="hidden sm:block text-sm font-medium text-white">{user?.name}</span>
-                  <CaretDown size={14} className="text-white/50" />
+                  <span className="hidden sm:block text-sm font-medium text-gray-700">{user?.name}</span>
+                  <CaretDown size={14} className="text-gray-400" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-[#141414] border-white/10">
+              <DropdownMenuContent align="end" className="w-56 bg-white border-gray-200">
                 <div className="px-3 py-2">
-                  <p className="text-sm font-medium text-white">{user?.name}</p>
-                  <p className="text-xs text-white/50">{user?.email}</p>
-                  <span className={`inline-block mt-1 px-2 py-0.5 rounded-sm text-xs font-bold uppercase tracking-wider ${
-                    user?.role === 'admin' ? 'bg-[#007AFF]/20 text-[#007AFF]' : 'bg-[#32D74B]/20 text-[#32D74B]'
+                  <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                  <p className="text-xs text-gray-500">{user?.email}</p>
+                  <span className={`inline-block mt-1 px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider ${
+                    user?.role === 'admin' ? 'bg-blue-100 text-blue-600' : 'bg-green-100 text-green-600'
                   }`}>
                     {user?.role}
                   </span>
                 </div>
-                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuSeparator className="bg-gray-200" />
                 <DropdownMenuItem 
                   data-testid="logout-button"
                   onClick={handleLogout}
-                  className="text-[#FF3B30] focus:text-[#FF3B30] focus:bg-[#FF3B30]/10 cursor-pointer"
+                  className="text-red-500 focus:text-red-500 focus:bg-red-50 cursor-pointer"
                 >
                   <SignOut size={16} className="mr-2" />
                   Esci
@@ -123,10 +123,10 @@ const Layout = ({ children }) => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-2 px-3 py-2 rounded-sm text-xs font-medium whitespace-nowrap transition-colors ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
                   isActive 
-                    ? 'bg-[#007AFF] text-white' 
-                    : 'text-white/60 hover:text-white hover:bg-white/5'
+                    ? 'bg-blue-500 text-white' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }`}
               >
                 <Icon size={16} weight={isActive ? 'fill' : 'regular'} />

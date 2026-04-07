@@ -19,7 +19,7 @@ import { Toaster } from "./components/ui/sonner";
 function App() {
   return (
     <AuthProvider>
-      <div className="App dark">
+      <div className="App">
         <BrowserRouter>
           <Routes>
             {/* Public Routes */}

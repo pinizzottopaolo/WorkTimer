@@ -9,12 +9,12 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 bg-[#007AFF] rounded-sm flex items-center justify-center animate-pulse">
+          <div className="w-16 h-16 bg-blue-500 rounded-xl flex items-center justify-center animate-pulse">
             <Clock size={36} weight="bold" className="text-white" />
           </div>
-          <p className="text-white/50 text-sm tracking-[0.2em] uppercase">Caricamento...</p>
+          <p className="text-gray-500 text-sm tracking-wider uppercase">Caricamento...</p>
         </div>
       </div>
     );
