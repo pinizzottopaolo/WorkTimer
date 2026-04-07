@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getScheda, createScheda, updateScheda, getClienti, getOperazioniTemplate } from '../services/api';
-import { ArrowLeft, Plus, Trash, FloppyDisk, Check } from '@phosphor-icons/react';
+import { ArrowLeft, Plus, Trash, FloppyDisk, Check, CaretDown } from '@phosphor-icons/react';
 import { Calendar } from '../components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 import { format } from 'date-fns';
@@ -17,6 +17,7 @@ const SchedaForm = () => {
   const [saving, setSaving] = useState(false);
   const [clienti, setClienti] = useState([]);
   const [operazioniTemplate, setOperazioniTemplate] = useState([]);
+  const [showOpMenu, setShowOpMenu] = useState(false);
   
   const [formData, setFormData] = useState({
     cliente_id: '',
@@ -77,6 +78,7 @@ const SchedaForm = () => {
       ...prev,
       operazioni: [...prev.operazioni, newOp]
     }));
+    setShowOpMenu(false);
   };
 
   const removeOperazione = (index) => {
@@ -93,6 +95,12 @@ const SchedaForm = () => {
         i === index ? { ...op, [field]: value } : op
       )
     }));
+  };
+
+  // Mostra N. Colli solo per operazioni di confezione/impacchettamento
+  const showColliField = (opName) => {
+    const lower = opName.toLowerCase();
+    return lower.includes('impacchett') || lower.includes('confezion') || lower.includes('colli');
   };
 
   const handleSubmit = async (e) => {
@@ -239,43 +247,50 @@ const SchedaForm = () => {
         <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-heading text-lg font-bold text-gray-900">Operazioni</h3>
-            <div className="flex items-center gap-2">
-              <Popover>
-                <PopoverTrigger asChild>
+            <div className="relative">
+              <button
+                type="button"
+                data-testid="add-operazione-button"
+                onClick={() => setShowOpMenu(!showOpMenu)}
+                className="bg-blue-500 text-white font-bold rounded-lg px-4 py-2 hover:bg-blue-600 transition-colors flex items-center gap-2 text-sm"
+              >
+                <Plus size={16} weight="bold" />
+                Aggiungi
+                <CaretDown size={14} />
+              </button>
+              
+              {showOpMenu && (
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-2">
+                  {operazioniTemplate.map(op => (
+                    <button
+                      key={op.id}
+                      type="button"
+                      onClick={() => addOperazione(op)}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 text-sm transition-colors"
+                    >
+                      {op.nome}
+                    </button>
+                  ))}
+                  <div className="h-px bg-gray-200 my-1"></div>
                   <button
                     type="button"
-                    data-testid="add-operazione-button"
-                    className="bg-blue-500 text-white font-bold rounded-lg px-4 py-2 hover:bg-blue-600 transition-colors flex items-center gap-2 text-sm"
+                    onClick={() => addOperazione(null)}
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100 text-blue-500 text-sm transition-colors"
                   >
-                    <Plus size={16} weight="bold" />
-                    Aggiungi
+                    + Personalizzata
                   </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-56 p-2 bg-white border-gray-200" align="end">
-                  <div className="space-y-1">
-                    {operazioniTemplate.map(op => (
-                      <button
-                        key={op.id}
-                        type="button"
-                        onClick={() => addOperazione(op)}
-                        className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-700 text-sm transition-colors"
-                      >
-                        {op.nome}
-                      </button>
-                    ))}
-                    <div className="h-px bg-gray-200 my-1"></div>
-                    <button
-                      type="button"
-                      onClick={() => addOperazione(null)}
-                      className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-blue-500 text-sm transition-colors"
-                    >
-                      + Personalizzata
-                    </button>
-                  </div>
-                </PopoverContent>
-              </Popover>
+                </div>
+              )}
             </div>
           </div>
+
+          {/* Click outside to close menu */}
+          {showOpMenu && (
+            <div 
+              className="fixed inset-0 z-40" 
+              onClick={() => setShowOpMenu(false)}
+            />
+          )}
 
           {formData.operazioni.length === 0 ? (
             <div className="text-center py-8 border border-dashed border-gray-300 rounded-lg">
@@ -298,7 +313,7 @@ const SchedaForm = () => {
                       type="text"
                       value={op.nome}
                       onChange={(e) => updateOperazione(index, 'nome', e.target.value)}
-                      className="bg-transparent border-none text-gray-900 font-semibold text-lg focus:outline-none focus:ring-0 p-0"
+                      className="bg-transparent border-none text-gray-900 font-semibold text-lg focus:outline-none focus:ring-0 p-0 flex-1"
                       placeholder="Nome operazione"
                     />
                     <div className="flex items-center gap-2">
@@ -329,7 +344,7 @@ const SchedaForm = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className={`grid gap-3 ${showColliField(op.nome) ? 'grid-cols-2 md:grid-cols-5' : 'grid-cols-2 md:grid-cols-4'}`}>
                     <div>
                       <label className="block text-xs text-gray-500 mb-1">N. Fogli</label>
                       <input
@@ -348,17 +363,28 @@ const SchedaForm = () => {
                         className="w-full bg-white border border-gray-200 text-gray-900 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
+                    {showColliField(op.nome) && (
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">N. Colli</label>
+                        <input
+                          type="number"
+                          value={op.n_colli || ''}
+                          onChange={(e) => updateOperazione(index, 'n_colli', parseInt(e.target.value) || 0)}
+                          className="w-full bg-white border border-gray-200 text-gray-900 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </div>
+                    )}
                     <div>
-                      <label className="block text-xs text-gray-500 mb-1">N. Colli</label>
+                      <label className="block text-xs text-gray-500 mb-1">Tempo Stim. (min)</label>
                       <input
                         type="number"
-                        value={op.n_colli || ''}
-                        onChange={(e) => updateOperazione(index, 'n_colli', parseInt(e.target.value) || 0)}
+                        value={op.tempo_stimato || ''}
+                        onChange={(e) => updateOperazione(index, 'tempo_stimato', parseInt(e.target.value) || 0)}
                         className="w-full bg-white border border-gray-200 text-gray-900 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-gray-500 mb-1">Tempo (min)</label>
+                      <label className="block text-xs text-gray-500 mb-1">Tempo Eff. (min)</label>
                       <input
                         type="number"
                         value={op.tempo_effettivo || ''}
