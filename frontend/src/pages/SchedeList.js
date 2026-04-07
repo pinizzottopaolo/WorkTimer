@@ -149,8 +149,7 @@ const SchedeList = () => {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
-                  <th className="text-left text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3">Lavoro</th>
-                  <th className="text-left text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3">Cliente</th>
+                  <th className="text-left text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3">Cliente / Lavoro</th>
                   <th className="text-left text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3 hidden md:table-cell">Data</th>
                   <th className="text-left text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3 hidden lg:table-cell">Tempo</th>
                   <th className="text-left text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3">Stato</th>
@@ -162,13 +161,13 @@ const SchedeList = () => {
                   <tr key={scheda.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3">
                       <div>
-                        <p className="text-gray-900 font-medium">{scheda.lavoro}</p>
+                        <p className="text-gray-900 font-bold text-base">{scheda.cliente_nome}</p>
+                        <p className="text-gray-600 text-sm">{scheda.lavoro}</p>
                         {scheda.n_ordine_interno && (
                           <p className="text-gray-400 text-xs">#{scheda.n_ordine_interno}</p>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{scheda.cliente_nome}</td>
                     <td className="px-4 py-3 text-gray-600 font-mono text-sm hidden md:table-cell">{scheda.data_lavoro}</td>
                     <td className="px-4 py-3 hidden lg:table-cell">
                       <div className="text-sm">
