@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { getScheda, createScheda, updateScheda, getClienti, getOperazioniTemplate } from '../services/api';
 import { ArrowLeft, Plus, Trash, FloppyDisk, Check, CaretDown } from '@phosphor-icons/react';
 import { Calendar } from '../components/ui/calendar';
@@ -10,8 +10,10 @@ import { CalendarBlank } from '@phosphor-icons/react';
 
 const SchedaForm = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const isEdit = !!id;
+  const repartoFromUrl = searchParams.get('reparto') || 'confezione';
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -22,6 +24,7 @@ const SchedaForm = () => {
   const [formData, setFormData] = useState({
     cliente_id: '',
     lavoro: '',
+    reparto: repartoFromUrl,
     n_ordine_cliente: '',
     n_ordine_interno: '',
     data_lavoro: format(new Date(), 'yyyy-MM-dd'),
@@ -36,7 +39,7 @@ const SchedaForm = () => {
       try {
         const [clientiRes, opsRes] = await Promise.all([
           getClienti(),
-          getOperazioniTemplate()
+          getOperazioniTemplate(isEdit ? null : repartoFromUrl)
         ]);
         setClienti(clientiRes.data);
         setOperazioniTemplate(opsRes.data);
@@ -46,6 +49,7 @@ const SchedaForm = () => {
           setFormData({
             cliente_id: schedaRes.data.cliente_id,
             lavoro: schedaRes.data.lavoro,
+            reparto: schedaRes.data.reparto || 'confezione',
             n_ordine_cliente: schedaRes.data.n_ordine_cliente || '',
             n_ordine_interno: schedaRes.data.n_ordine_interno || '',
             data_lavoro: schedaRes.data.data_lavoro,
@@ -145,9 +149,16 @@ const SchedaForm = () => {
           <ArrowLeft size={20} />
         </button>
         <div>
-          <h1 className="font-heading text-2xl font-black uppercase tracking-tight text-gray-900">
-            {isEdit ? 'Modifica Scheda' : 'Nuova Scheda Lavoro'}
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="font-heading text-2xl font-black uppercase tracking-tight text-gray-900">
+              {isEdit ? 'Modifica Scheda' : 'Nuova Scheda'}
+            </h1>
+            <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${
+              formData.reparto === 'stampa' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'
+            }`}>
+              {formData.reparto}
+            </span>
+          </div>
           <p className="text-gray-500 text-sm">Compila i dettagli della lavorazione</p>
         </div>
       </div>

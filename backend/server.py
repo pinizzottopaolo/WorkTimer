@@ -84,11 +84,13 @@ class ClienteOut(BaseModel):
 class OperazioneTemplateCreate(BaseModel):
     nome: str
     descrizione: Optional[str] = None
+    reparto: str = "confezione"  # confezione o stampa
 
 class OperazioneTemplateOut(BaseModel):
     id: str
     nome: str
     descrizione: Optional[str] = None
+    reparto: str = "confezione"
 
 class OperazioneInput(BaseModel):
     nome: str
@@ -103,6 +105,7 @@ class OperazioneInput(BaseModel):
 class SchedaLavoroCreate(BaseModel):
     cliente_id: str
     lavoro: str
+    reparto: str = "confezione"  # confezione o stampa
     n_ordine_cliente: Optional[str] = None
     n_ordine_interno: Optional[str] = None
     data_lavoro: str
@@ -113,6 +116,7 @@ class SchedaLavoroCreate(BaseModel):
 class SchedaLavoroUpdate(BaseModel):
     cliente_id: Optional[str] = None
     lavoro: Optional[str] = None
+    reparto: Optional[str] = None
     n_ordine_cliente: Optional[str] = None
     n_ordine_interno: Optional[str] = None
     data_lavoro: Optional[str] = None
@@ -128,6 +132,7 @@ class SchedaLavoroOut(BaseModel):
     operatore_id: str
     operatore_nome: Optional[str] = None
     lavoro: str
+    reparto: str = "confezione"
     n_ordine_cliente: Optional[str] = None
     n_ordine_interno: Optional[str] = None
     data_lavoro: str
@@ -333,10 +338,13 @@ async def create_operazione_template(data: OperazioneTemplateCreate, request: Re
     return {"id": str(result.inserted_id), **data.model_dump()}
 
 @api_router.get("/operazioni-template", response_model=List[OperazioneTemplateOut])
-async def get_operazioni_template(request: Request):
+async def get_operazioni_template(request: Request, reparto: Optional[str] = None):
     await get_current_user(request)
-    ops = await db.operazioni_template.find({}).to_list(1000)
-    return [{"id": str(o["_id"]), "nome": o["nome"], "descrizione": o.get("descrizione")} for o in ops]
+    query = {}
+    if reparto:
+        query["reparto"] = reparto
+    ops = await db.operazioni_template.find(query).to_list(1000)
+    return [{"id": str(o["_id"]), "nome": o["nome"], "descrizione": o.get("descrizione"), "reparto": o.get("reparto", "confezione")} for o in ops]
 
 @api_router.delete("/operazioni-template/{op_id}")
 async def delete_operazione_template(op_id: str, request: Request):
@@ -364,6 +372,7 @@ async def create_scheda(data: SchedaLavoroCreate, request: Request):
         "operatore_id": user["id"],
         "operatore_nome": user["name"],
         "lavoro": data.lavoro,
+        "reparto": data.reparto,
         "n_ordine_cliente": data.n_ordine_cliente,
         "n_ordine_interno": data.n_ordine_interno,
         "data_lavoro": data.data_lavoro,
@@ -382,7 +391,7 @@ async def create_scheda(data: SchedaLavoroCreate, request: Request):
     return doc
 
 @api_router.get("/schede", response_model=List[SchedaLavoroOut])
-async def get_schede(request: Request, stato: Optional[str] = None, cliente_id: Optional[str] = None, operatore_id: Optional[str] = None, data_da: Optional[str] = None, data_a: Optional[str] = None):
+async def get_schede(request: Request, stato: Optional[str] = None, cliente_id: Optional[str] = None, operatore_id: Optional[str] = None, reparto: Optional[str] = None, data_da: Optional[str] = None, data_a: Optional[str] = None):
     user = await get_current_user(request)
     
     query = {}
@@ -390,6 +399,8 @@ async def get_schede(request: Request, stato: Optional[str] = None, cliente_id: 
         query["stato"] = stato
     if cliente_id:
         query["cliente_id"] = cliente_id
+    if reparto:
+        query["reparto"] = reparto
     if operatore_id:
         query["operatore_id"] = operatore_id
     if data_da:
@@ -458,9 +469,11 @@ async def delete_scheda(scheda_id: str, request: Request):
 
 # --- Statistics Routes ---
 @api_router.get("/stats/overview")
-async def get_stats_overview(request: Request):
+async def get_stats_overview(request: Request, reparto: Optional[str] = None):
     user = await get_current_user(request)
     query = {} if user["role"] == "admin" else {"operatore_id": user["id"]}
+    if reparto:
+        query["reparto"] = reparto
     
     total_schede = await db.schede_lavoro.count_documents(query)
     schede_in_corso = await db.schede_lavoro.count_documents({**query, "stato": "in_corso"})

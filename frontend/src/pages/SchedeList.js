@@ -19,12 +19,14 @@ const SchedeList = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState(searchParams.get('stato') || '');
+  const [repartoFilter, setRepartoFilter] = useState(searchParams.get('reparto') || '');
   const [deleteId, setDeleteId] = useState(null);
 
   const fetchSchede = async () => {
     try {
       const params = {};
       if (statusFilter) params.stato = statusFilter;
+      if (repartoFilter) params.reparto = repartoFilter;
       const res = await getSchede(params);
       setSchede(res.data);
     } catch (e) {
@@ -36,19 +38,18 @@ const SchedeList = () => {
 
   useEffect(() => {
     const statoFromUrl = searchParams.get('stato') || '';
-    if (statoFromUrl !== statusFilter) {
-      setStatusFilter(statoFromUrl);
-    }
+    const repartoFromUrl = searchParams.get('reparto') || '';
+    if (statoFromUrl !== statusFilter) setStatusFilter(statoFromUrl);
+    if (repartoFromUrl !== repartoFilter) setRepartoFilter(repartoFromUrl);
   }, [searchParams]);
 
   useEffect(() => {
     fetchSchede();
-    if (statusFilter) {
-      setSearchParams({ stato: statusFilter });
-    } else {
-      setSearchParams({});
-    }
-  }, [statusFilter]);
+    const params = {};
+    if (statusFilter) params.stato = statusFilter;
+    if (repartoFilter) params.reparto = repartoFilter;
+    setSearchParams(params);
+  }, [statusFilter, repartoFilter]);
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -116,7 +117,16 @@ const SchedeList = () => {
           />
         </div>
         <div className="flex items-center gap-2">
-          <Funnel size={18} className="text-gray-400" />
+          <select
+            data-testid="reparto-filter-select"
+            value={repartoFilter}
+            onChange={(e) => setRepartoFilter(e.target.value)}
+            className="bg-white border border-gray-300 text-gray-900 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Tutti i reparti</option>
+            <option value="confezione">Confezione</option>
+            <option value="stampa">Stampa</option>
+          </select>
           <select
             data-testid="status-filter-select"
             value={statusFilter}

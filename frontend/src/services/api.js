@@ -33,7 +33,7 @@ export const updateCliente = (id, data) => api.put(`/clienti/${id}`, data);
 export const deleteCliente = (id) => api.delete(`/clienti/${id}`);
 
 // Operazioni Template
-export const getOperazioniTemplate = () => api.get('/operazioni-template');
+export const getOperazioniTemplate = (reparto) => api.get('/operazioni-template', { params: reparto ? { reparto } : {} });
 export const createOperazioneTemplate = (data) => api.post('/operazioni-template', data);
 export const deleteOperazioneTemplate = (id) => api.delete(`/operazioni-template/${id}`);
 
@@ -45,7 +45,7 @@ export const updateScheda = (id, data) => api.put(`/schede/${id}`, data);
 export const deleteScheda = (id) => api.delete(`/schede/${id}`);
 
 // Stats
-export const getStatsOverview = () => api.get('/stats/overview');
+export const getStatsOverview = (reparto) => api.get('/stats/overview', { params: reparto ? { reparto } : {} });
 export const getStatsPerCliente = () => api.get('/stats/per-cliente');
 export const getStatsPerOperatore = () => api.get('/stats/per-operatore');
 export const getStatsPerPeriodo = (params) => api.get('/stats/per-periodo', { params });
