@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { getSchede, deleteScheda } from '../services/api';
 import { 
   Plus, MagnifyingGlass, Funnel, Trash, Eye, PencilSimple,
@@ -17,10 +17,11 @@ import {
 } from '../components/ui/alert-dialog';
 
 const SchedeList = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [schede, setSchede] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState(searchParams.get('stato') || '');
   const [deleteId, setDeleteId] = useState(null);
 
   const fetchSchede = async () => {
@@ -37,7 +38,21 @@ const SchedeList = () => {
   };
 
   useEffect(() => {
+    // Sync URL params with state
+    const statoFromUrl = searchParams.get('stato') || '';
+    if (statoFromUrl !== statusFilter) {
+      setStatusFilter(statoFromUrl);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     fetchSchede();
+    // Update URL when filter changes
+    if (statusFilter) {
+      setSearchParams({ stato: statusFilter });
+    } else {
+      setSearchParams({});
+    }
   }, [statusFilter]);
 
   const handleDelete = async () => {

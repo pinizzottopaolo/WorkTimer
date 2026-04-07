@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getStatsOverview, getSchede } from '../services/api';
 import { Files, Clock, CheckCircle, Timer, ArrowRight, Plus } from '@phosphor-icons/react';
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [recentSchede, setRecentSchede] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -65,10 +66,13 @@ const Dashboard = () => {
         </Link>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats Grid - Clickable */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 stagger-children">
         {/* Total Schede */}
-        <div className="stat-card p-5">
+        <div 
+          onClick={() => navigate('/schede')}
+          className="stat-card p-5 cursor-pointer hover:shadow-md transition-shadow"
+        >
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs tracking-wider uppercase font-bold text-gray-500">Totale Schede</p>
@@ -78,10 +82,14 @@ const Dashboard = () => {
               <Files size={22} className="text-blue-500" />
             </div>
           </div>
+          <p className="text-xs text-blue-500 mt-3 font-medium">Clicca per vedere tutte →</p>
         </div>
 
         {/* In Corso */}
-        <div className="stat-card p-5">
+        <div 
+          onClick={() => navigate('/schede?stato=in_corso')}
+          className="stat-card p-5 cursor-pointer hover:shadow-md transition-shadow"
+        >
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs tracking-wider uppercase font-bold text-gray-500">In Corso</p>
@@ -91,10 +99,14 @@ const Dashboard = () => {
               <Timer size={22} className="text-yellow-600" />
             </div>
           </div>
+          <p className="text-xs text-yellow-600 mt-3 font-medium">Clicca per filtrare →</p>
         </div>
 
         {/* Completate */}
-        <div className="stat-card p-5">
+        <div 
+          onClick={() => navigate('/schede?stato=completata')}
+          className="stat-card p-5 cursor-pointer hover:shadow-md transition-shadow"
+        >
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs tracking-wider uppercase font-bold text-gray-500">Completate</p>
@@ -104,6 +116,7 @@ const Dashboard = () => {
               <CheckCircle size={22} className="text-green-500" />
             </div>
           </div>
+          <p className="text-xs text-green-500 mt-3 font-medium">Clicca per filtrare →</p>
         </div>
 
         {/* Tempo Totale */}
