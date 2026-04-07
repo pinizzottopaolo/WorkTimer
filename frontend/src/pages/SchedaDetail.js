@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getScheda, updateScheda, deleteScheda } from '../services/api';
-import { 
-  ArrowLeft, PencilSimple, Trash, Clock, CheckCircle, 
-  WarningCircle, Package, Files, User, Calendar
-} from '@phosphor-icons/react';
+import { ArrowLeft, PencilSimple, Trash, Clock, CheckCircle, WarningCircle, Package, Files, User, Calendar } from '@phosphor-icons/react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -66,7 +63,7 @@ const SchedaDetail = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-pulse text-white/50">Caricamento...</div>
+        <div className="animate-pulse text-gray-500">Caricamento...</div>
       </div>
     );
   }
@@ -74,17 +71,13 @@ const SchedaDetail = () => {
   if (!scheda) {
     return (
       <div className="text-center py-12">
-        <p className="text-white/50">Scheda non trovata</p>
-        <Link to="/schede" className="text-[#007AFF] hover:text-[#3395FF] mt-2 inline-block">
+        <p className="text-gray-500">Scheda non trovata</p>
+        <Link to="/schede" className="text-blue-500 hover:text-blue-600 mt-2 inline-block">
           Torna alle schede
         </Link>
       </div>
     );
   }
-
-  const efficiency = scheda.tempo_totale_stimato > 0 
-    ? Math.round((scheda.tempo_totale_effettivo / scheda.tempo_totale_stimato) * 100)
-    : 0;
 
   return (
     <div className="space-y-6 fade-in max-w-4xl mx-auto">
@@ -93,30 +86,30 @@ const SchedaDetail = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/schede')}
-            className="p-2 rounded-sm hover:bg-white/10 transition-colors text-white/60 hover:text-white"
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-700"
           >
             <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
+            <h1 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-tight text-gray-900">
               {scheda.lavoro}
             </h1>
-            <p className="text-white/50 text-sm mt-1">{scheda.cliente_nome}</p>
+            <p className="text-gray-500 text-sm mt-1">{scheda.cliente_nome}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Link
             to={`/schede/${id}/modifica`}
             data-testid="edit-scheda-detail-button"
-            className="border border-white/20 text-white font-bold rounded-sm px-4 py-2 hover:bg-white/5 transition-colors flex items-center gap-2"
+            className="border border-gray-300 text-gray-700 font-bold rounded-lg px-4 py-2 hover:bg-gray-50 transition-colors flex items-center gap-2"
           >
             <PencilSimple size={18} />
-            Modifica
+            <span className="hidden sm:inline">Modifica</span>
           </Link>
           <button
             onClick={() => setShowDelete(true)}
             data-testid="delete-scheda-detail-button"
-            className="border border-[#FF3B30]/50 text-[#FF3B30] font-bold rounded-sm px-4 py-2 hover:bg-[#FF3B30]/10 transition-colors flex items-center gap-2"
+            className="border border-red-300 text-red-500 font-bold rounded-lg px-4 py-2 hover:bg-red-50 transition-colors flex items-center gap-2"
           >
             <Trash size={18} />
           </button>
@@ -124,38 +117,38 @@ const SchedaDetail = () => {
       </div>
 
       {/* Status Banner */}
-      <div className={`rounded-sm p-4 flex items-center justify-between ${
+      <div className={`rounded-lg p-4 flex items-center justify-between ${
         scheda.stato === 'completata' 
-          ? 'bg-[#32D74B]/10 border border-[#32D74B]/30' 
+          ? 'bg-green-50 border border-green-200' 
           : scheda.stato === 'sospesa'
-          ? 'bg-[#FFD60A]/10 border border-[#FFD60A]/30'
-          : 'bg-[#007AFF]/10 border border-[#007AFF]/30'
+          ? 'bg-yellow-50 border border-yellow-200'
+          : 'bg-blue-50 border border-blue-200'
       }`}>
         <div className="flex items-center gap-3">
           {scheda.stato === 'completata' ? (
-            <CheckCircle size={24} className="text-[#32D74B]" weight="fill" />
+            <CheckCircle size={24} className="text-green-500" weight="fill" />
           ) : scheda.stato === 'sospesa' ? (
-            <WarningCircle size={24} className="text-[#FFD60A]" weight="fill" />
+            <WarningCircle size={24} className="text-yellow-500" weight="fill" />
           ) : (
-            <Clock size={24} className="text-[#007AFF]" weight="fill" />
+            <Clock size={24} className="text-blue-500" weight="fill" />
           )}
           <div>
             <p className={`font-bold uppercase text-sm tracking-wider ${
-              scheda.stato === 'completata' ? 'text-[#32D74B]' : 
-              scheda.stato === 'sospesa' ? 'text-[#FFD60A]' : 'text-[#007AFF]'
+              scheda.stato === 'completata' ? 'text-green-600' : 
+              scheda.stato === 'sospesa' ? 'text-yellow-600' : 'text-blue-600'
             }`}>
               {scheda.stato.replace('_', ' ')}
             </p>
-            <p className="text-white/50 text-xs">Ultimo aggiornamento: {new Date(scheda.updated_at).toLocaleString('it-IT')}</p>
+            <p className="text-gray-500 text-xs">Ultimo aggiornamento: {new Date(scheda.updated_at).toLocaleString('it-IT')}</p>
           </div>
         </div>
         <button
           onClick={toggleComplete}
           data-testid="toggle-complete-button"
-          className={`font-bold rounded-sm px-4 py-2 transition-colors text-sm ${
+          className={`font-bold rounded-lg px-4 py-2 transition-colors text-sm ${
             scheda.stato === 'completata'
-              ? 'bg-white/10 text-white hover:bg-white/20'
-              : 'bg-[#32D74B] text-black hover:bg-[#30D158]'
+              ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              : 'bg-green-500 text-white hover:bg-green-600'
           }`}
         >
           {scheda.stato === 'completata' ? 'Riapri' : 'Completa'}
@@ -163,102 +156,96 @@ const SchedaDetail = () => {
       </div>
 
       {/* Info Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-[#141414] border border-white/10 rounded-sm p-4">
-          <div className="flex items-center gap-2 text-white/50 mb-2">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+          <div className="flex items-center gap-2 text-gray-500 mb-2">
             <User size={16} />
             <span className="text-xs uppercase tracking-wider">Operatore</span>
           </div>
-          <p className="text-white font-medium">{scheda.operatore_nome}</p>
+          <p className="text-gray-900 font-medium">{scheda.operatore_nome}</p>
         </div>
-        <div className="bg-[#141414] border border-white/10 rounded-sm p-4">
-          <div className="flex items-center gap-2 text-white/50 mb-2">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+          <div className="flex items-center gap-2 text-gray-500 mb-2">
             <Calendar size={16} />
             <span className="text-xs uppercase tracking-wider">Data</span>
           </div>
-          <p className="text-white font-medium font-mono">{scheda.data_lavoro}</p>
+          <p className="text-gray-900 font-medium font-mono">{scheda.data_lavoro}</p>
         </div>
-        <div className="bg-[#141414] border border-white/10 rounded-sm p-4">
-          <div className="flex items-center gap-2 text-white/50 mb-2">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+          <div className="flex items-center gap-2 text-gray-500 mb-2">
             <Files size={16} />
-            <span className="text-xs uppercase tracking-wider">Ordine Cliente</span>
+            <span className="text-xs uppercase tracking-wider">Ordine Int.</span>
           </div>
-          <p className="text-white font-medium">{scheda.n_ordine_cliente || '-'}</p>
+          <p className="text-gray-900 font-medium">{scheda.n_ordine_interno || '-'}</p>
         </div>
-        <div className="bg-[#141414] border border-white/10 rounded-sm p-4">
-          <div className="flex items-center gap-2 text-white/50 mb-2">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+          <div className="flex items-center gap-2 text-gray-500 mb-2">
             <Package size={16} />
-            <span className="text-xs uppercase tracking-wider">Ordine Interno</span>
+            <span className="text-xs uppercase tracking-wider">Operazioni</span>
           </div>
-          <p className="text-white font-medium">{scheda.n_ordine_interno || '-'}</p>
+          <p className="text-gray-900 font-medium">{scheda.operazioni?.length || 0}</p>
         </div>
       </div>
 
       {/* Time Summary */}
-      <div className="bg-[#141414] border border-white/10 rounded-sm p-5">
-        <h3 className="font-heading text-lg font-bold text-white mb-4">Riepilogo Tempi</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="text-center p-4 bg-[#0A0A0A] rounded-sm">
-            <p className="text-xs text-white/50 uppercase tracking-wider mb-2">Tempo Stimato</p>
-            <p className="text-2xl font-mono font-bold text-white">{formatMinutes(scheda.tempo_totale_stimato)}</p>
+      <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+        <h3 className="font-heading text-lg font-bold text-gray-900 mb-4">Riepilogo Tempi</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Tempo Stimato</p>
+            <p className="text-2xl font-mono font-bold text-gray-900">{formatMinutes(scheda.tempo_totale_stimato)}</p>
           </div>
-          <div className="text-center p-4 bg-[#0A0A0A] rounded-sm">
-            <p className="text-xs text-white/50 uppercase tracking-wider mb-2">Tempo Effettivo</p>
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Tempo Effettivo</p>
             <p className={`text-2xl font-mono font-bold ${
-              scheda.tempo_totale_effettivo <= scheda.tempo_totale_stimato ? 'text-[#32D74B]' : 'text-[#FF3B30]'
+              scheda.tempo_totale_effettivo <= scheda.tempo_totale_stimato ? 'text-green-600' : 'text-red-500'
             }`}>
               {formatMinutes(scheda.tempo_totale_effettivo)}
-            </p>
-          </div>
-          <div className="text-center p-4 bg-[#0A0A0A] rounded-sm">
-            <p className="text-xs text-white/50 uppercase tracking-wider mb-2">Efficienza</p>
-            <p className={`text-2xl font-mono font-bold ${
-              efficiency <= 100 ? 'text-[#32D74B]' : 'text-[#FF3B30]'
-            }`}>
-              {efficiency}%
             </p>
           </div>
         </div>
       </div>
 
       {/* Operazioni */}
-      <div className="bg-[#141414] border border-white/10 rounded-sm p-5">
-        <h3 className="font-heading text-lg font-bold text-white mb-4">Operazioni ({scheda.operazioni?.length || 0})</h3>
+      <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+        <h3 className="font-heading text-lg font-bold text-gray-900 mb-4">Operazioni ({scheda.operazioni?.length || 0})</h3>
         {scheda.operazioni?.length === 0 ? (
-          <p className="text-white/50 text-center py-8">Nessuna operazione registrata</p>
+          <p className="text-gray-500 text-center py-8">Nessuna operazione registrata</p>
         ) : (
           <div className="space-y-3">
             {scheda.operazioni.map((op, index) => (
               <div 
                 key={index}
-                className={`border rounded-sm p-4 ${
-                  op.completata ? 'border-[#32D74B]/30 bg-[#32D74B]/5' : 'border-white/10 bg-[#0A0A0A]'
+                className={`border rounded-lg p-4 ${
+                  op.completata ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-gray-50'
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    {op.completata && <CheckCircle size={18} className="text-[#32D74B]" weight="fill" />}
-                    <span className="text-white font-semibold">{op.nome}</span>
+                    {op.completata && <CheckCircle size={18} className="text-green-500" weight="fill" />}
+                    <span className="text-gray-900 font-semibold">{op.nome}</span>
                   </div>
                   <span className={`text-sm font-mono ${
-                    op.tempo_effettivo <= op.tempo_stimato ? 'text-[#32D74B]' : 'text-[#FF3B30]'
+                    op.tempo_effettivo <= op.tempo_stimato ? 'text-green-600' : 'text-red-500'
                   }`}>
                     {op.tempo_effettivo}/{op.tempo_stimato} min
                   </span>
                 </div>
                 <div className="grid grid-cols-3 gap-4 text-sm">
                   <div>
-                    <span className="text-white/40">N. Fogli:</span>
-                    <span className="text-white ml-2">{op.n_fogli || 0}</span>
+                    <span className="text-gray-400">N. Fogli:</span>
+                    <span className="text-gray-700 ml-2">{op.n_fogli || 0}</span>
                   </div>
                   <div>
-                    <span className="text-white/40">N. Parti:</span>
-                    <span className="text-white ml-2">{op.n_parti || 0}</span>
+                    <span className="text-gray-400">N. Parti:</span>
+                    <span className="text-gray-700 ml-2">{op.n_parti || 0}</span>
                   </div>
-                  <div>
-                    <span className="text-white/40">N. Colli:</span>
-                    <span className="text-white ml-2">{op.n_colli || 0}</span>
-                  </div>
+                  {op.n_colli > 0 && (
+                    <div>
+                      <span className="text-gray-400">N. Colli:</span>
+                      <span className="text-gray-700 ml-2">{op.n_colli}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -270,18 +257,18 @@ const SchedaDetail = () => {
       {(scheda.note || scheda.problemi) && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {scheda.note && (
-            <div className="bg-[#141414] border border-white/10 rounded-sm p-5">
-              <h3 className="font-heading text-lg font-bold text-white mb-3">Note</h3>
-              <p className="text-white/70 whitespace-pre-wrap">{scheda.note}</p>
+            <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+              <h3 className="font-heading text-lg font-bold text-gray-900 mb-3">Note</h3>
+              <p className="text-gray-600 whitespace-pre-wrap">{scheda.note}</p>
             </div>
           )}
           {scheda.problemi && (
-            <div className="bg-[#141414] border border-[#FF3B30]/20 rounded-sm p-5">
-              <h3 className="font-heading text-lg font-bold text-[#FF3B30] mb-3 flex items-center gap-2">
+            <div className="bg-white border border-red-200 rounded-lg p-5 shadow-sm">
+              <h3 className="font-heading text-lg font-bold text-red-600 mb-3 flex items-center gap-2">
                 <WarningCircle size={20} />
                 Problemi Riscontrati
               </h3>
-              <p className="text-white/70 whitespace-pre-wrap">{scheda.problemi}</p>
+              <p className="text-gray-600 whitespace-pre-wrap">{scheda.problemi}</p>
             </div>
           )}
         </div>
@@ -289,20 +276,20 @@ const SchedaDetail = () => {
 
       {/* Delete Confirmation */}
       <AlertDialog open={showDelete} onOpenChange={setShowDelete}>
-        <AlertDialogContent className="bg-[#141414] border-white/10">
+        <AlertDialogContent className="bg-white border-gray-200">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-white">Conferma eliminazione</AlertDialogTitle>
-            <AlertDialogDescription className="text-white/60">
+            <AlertDialogTitle className="text-gray-900">Conferma eliminazione</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-500">
               Sei sicuro di voler eliminare questa scheda? Questa azione non può essere annullata.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-transparent border-white/20 text-white hover:bg-white/5">
+            <AlertDialogCancel className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50">
               Annulla
             </AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleDelete}
-              className="bg-[#FF3B30] text-white hover:bg-[#FF453A]"
+              className="bg-red-500 text-white hover:bg-red-600"
             >
               Elimina
             </AlertDialogAction>

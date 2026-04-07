@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getUsers, updateUserRole } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
-import { User, Shield, UserCircle, Check } from '@phosphor-icons/react';
+import { Shield, UserCircle } from '@phosphor-icons/react';
 
 const Admin = () => {
   const { user: currentUser } = useAuth();
@@ -35,7 +35,7 @@ const Admin = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-pulse text-white/50">Caricamento...</div>
+        <div className="animate-pulse text-gray-500">Caricamento...</div>
       </div>
     );
   }
@@ -44,47 +44,47 @@ const Admin = () => {
     <div className="space-y-6 fade-in">
       {/* Header */}
       <div>
-        <h1 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
+        <h1 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-tight text-gray-900">
           Gestione Utenti
         </h1>
-        <p className="text-white/50 text-sm mt-1">{users.length} utenti registrati</p>
+        <p className="text-gray-500 text-sm mt-1">{users.length} utenti registrati</p>
       </div>
 
       {/* Users Table */}
-      <div className="bg-[#141414] border border-white/10 rounded-sm overflow-hidden">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/10">
-                <th className="text-left text-xs tracking-[0.1em] uppercase font-bold text-white/50 px-4 py-3">Utente</th>
-                <th className="text-left text-xs tracking-[0.1em] uppercase font-bold text-white/50 px-4 py-3">Email</th>
-                <th className="text-left text-xs tracking-[0.1em] uppercase font-bold text-white/50 px-4 py-3">Ruolo</th>
-                <th className="text-right text-xs tracking-[0.1em] uppercase font-bold text-white/50 px-4 py-3">Azioni</th>
+              <tr className="border-b border-gray-200 bg-gray-50">
+                <th className="text-left text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3">Utente</th>
+                <th className="text-left text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3">Email</th>
+                <th className="text-left text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3">Ruolo</th>
+                <th className="text-right text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3">Azioni</th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
-                <tr key={user.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                <tr key={user.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-sm flex items-center justify-center ${
-                        user.role === 'admin' ? 'bg-[#007AFF]/20' : 'bg-white/10'
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                        user.role === 'admin' ? 'bg-blue-100' : 'bg-gray-100'
                       }`}>
                         {user.role === 'admin' ? (
-                          <Shield size={20} className="text-[#007AFF]" />
+                          <Shield size={20} className="text-blue-500" />
                         ) : (
-                          <UserCircle size={20} className="text-white/60" />
+                          <UserCircle size={20} className="text-gray-500" />
                         )}
                       </div>
-                      <span className="text-white font-medium">{user.name}</span>
+                      <span className="text-gray-900 font-medium">{user.name}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-4 text-white/70">{user.email}</td>
+                  <td className="px-4 py-4 text-gray-600">{user.email}</td>
                   <td className="px-4 py-4">
-                    <span className={`px-2 py-1 rounded-sm text-xs font-bold uppercase tracking-wider ${
+                    <span className={`px-2 py-1 rounded text-xs font-bold uppercase tracking-wider ${
                       user.role === 'admin' 
-                        ? 'bg-[#007AFF]/20 text-[#007AFF]' 
-                        : 'bg-[#32D74B]/20 text-[#32D74B]'
+                        ? 'bg-blue-100 text-blue-600' 
+                        : 'bg-green-100 text-green-600'
                     }`}>
                       {user.role}
                     </span>
@@ -95,13 +95,13 @@ const Admin = () => {
                         value={user.role}
                         onChange={(e) => handleRoleChange(user.id, e.target.value)}
                         data-testid={`role-select-${user.id}`}
-                        className="bg-[#0A0A0A] border border-white/20 text-white rounded-sm px-3 py-1.5 text-sm focus:ring-1 focus:ring-[#007AFF] focus:border-[#007AFF]"
+                        className="bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       >
                         <option value="operatore">Operatore</option>
                         <option value="admin">Admin</option>
                       </select>
                     ) : (
-                      <span className="text-white/40 text-sm italic">Tu</span>
+                      <span className="text-gray-400 text-sm italic">Tu</span>
                     )}
                   </td>
                 </tr>

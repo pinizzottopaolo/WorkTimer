@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { 
-  getStatsOverview, getStatsPerCliente, getStatsPerOperatore, 
-  getStatsPerPeriodo, getStatsPerOperazione 
-} from '../services/api';
-import { 
-  ChartBar, Users, Calendar, Clock, Download, TrendUp, TrendDown
-} from '@phosphor-icons/react';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line, Legend
-} from 'recharts';
+import { getStatsOverview, getStatsPerCliente, getStatsPerOperatore, getStatsPerPeriodo, getStatsPerOperazione } from '../services/api';
+import { ChartBar, Users, Calendar, Clock, Download, TrendUp, TrendDown } from '@phosphor-icons/react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from 'recharts';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 import { Calendar as CalendarComponent } from '../components/ui/calendar';
 import { format, subDays } from 'date-fns';
@@ -18,7 +10,7 @@ import { it } from 'date-fns/locale';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
-const COLORS = ['#007AFF', '#32D74B', '#FF3B30', '#FFD60A', '#AF52DE', '#5AC8FA'];
+const COLORS = ['#3b82f6', '#22c55e', '#ef4444', '#eab308', '#a855f7', '#06b6d4'];
 
 const Report = () => {
   const { user } = useAuth();
@@ -78,7 +70,6 @@ const Report = () => {
   const exportToExcel = () => {
     const wb = XLSX.utils.book_new();
 
-    // Overview sheet
     const overviewData = [
       ['Metrica', 'Valore'],
       ['Totale Schede', overview?.total_schede || 0],
@@ -90,7 +81,6 @@ const Report = () => {
     const wsOverview = XLSX.utils.aoa_to_sheet(overviewData);
     XLSX.utils.book_append_sheet(wb, wsOverview, 'Riepilogo');
 
-    // Per Cliente sheet
     if (perCliente.length > 0) {
       const clienteData = [
         ['Cliente', 'N. Schede', 'Tempo Stimato (min)', 'Tempo Effettivo (min)'],
@@ -100,7 +90,6 @@ const Report = () => {
       XLSX.utils.book_append_sheet(wb, wsCliente, 'Per Cliente');
     }
 
-    // Per Operazione sheet
     if (perOperazione.length > 0) {
       const opData = [
         ['Operazione', 'Conteggio', 'Tempo Stimato (min)', 'Tempo Effettivo (min)'],
@@ -110,7 +99,6 @@ const Report = () => {
       XLSX.utils.book_append_sheet(wb, wsOp, 'Per Operazione');
     }
 
-    // Per Periodo sheet
     if (perPeriodo.length > 0) {
       const periodoData = [
         ['Data', 'N. Schede', 'Tempo Stimato (min)', 'Tempo Effettivo (min)'],
@@ -127,8 +115,8 @@ const Report = () => {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-[#1A1A1A] border border-white/20 rounded-sm p-3 shadow-lg">
-          <p className="text-white font-medium text-sm mb-2">{label}</p>
+        <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-lg">
+          <p className="text-gray-900 font-medium text-sm mb-2">{label}</p>
           {payload.map((entry, index) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
               {entry.name}: {entry.name.includes('Tempo') ? formatMinutes(entry.value) : entry.value}
@@ -143,7 +131,7 @@ const Report = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-pulse text-white/50">Caricamento report...</div>
+        <div className="animate-pulse text-gray-500">Caricamento report...</div>
       </div>
     );
   }
@@ -157,22 +145,22 @@ const Report = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
+          <h1 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-tight text-gray-900">
             Report & Statistiche
           </h1>
-          <p className="text-white/50 text-sm mt-1">Analisi dei tempi di lavoro</p>
+          <p className="text-gray-500 text-sm mt-1">Analisi dei tempi di lavoro</p>
         </div>
         <div className="flex items-center gap-3">
           <Popover>
             <PopoverTrigger asChild>
-              <button className="border border-white/20 text-white font-medium rounded-sm px-4 py-2 hover:bg-white/5 transition-colors flex items-center gap-2">
+              <button className="border border-gray-300 text-gray-700 font-medium rounded-lg px-4 py-2 hover:bg-gray-50 transition-colors flex items-center gap-2">
                 <Calendar size={18} />
                 <span className="text-sm">
                   {format(dateRange.from, 'dd MMM', { locale: it })} - {format(dateRange.to, 'dd MMM yyyy', { locale: it })}
                 </span>
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 bg-[#141414] border-white/10" align="end">
+            <PopoverContent className="w-auto p-0 bg-white border-gray-200" align="end">
               <CalendarComponent
                 mode="range"
                 selected={{ from: dateRange.from, to: dateRange.to }}
@@ -189,7 +177,7 @@ const Report = () => {
           <button
             onClick={exportToExcel}
             data-testid="export-excel-button"
-            className="bg-[#32D74B] text-black font-bold rounded-sm px-4 py-2 hover:bg-[#30D158] transition-colors flex items-center gap-2"
+            className="bg-green-500 text-white font-bold rounded-lg px-4 py-2 hover:bg-green-600 transition-colors flex items-center gap-2"
           >
             <Download size={18} weight="bold" />
             Export Excel
@@ -199,35 +187,35 @@ const Report = () => {
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-[#141414] border border-white/10 rounded-sm p-5">
-          <p className="text-xs tracking-[0.2em] uppercase font-bold text-white/50">Tempo Stimato</p>
-          <p className="text-2xl font-mono font-bold text-white mt-2">{formatMinutes(overview?.tempo_stimato_totale || 0)}</p>
+        <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+          <p className="text-xs tracking-wider uppercase font-bold text-gray-500">Tempo Stimato</p>
+          <p className="text-2xl font-mono font-bold text-gray-900 mt-2">{formatMinutes(overview?.tempo_stimato_totale || 0)}</p>
         </div>
-        <div className="bg-[#141414] border border-white/10 rounded-sm p-5">
-          <p className="text-xs tracking-[0.2em] uppercase font-bold text-white/50">Tempo Effettivo</p>
+        <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+          <p className="text-xs tracking-wider uppercase font-bold text-gray-500">Tempo Effettivo</p>
           <p className={`text-2xl font-mono font-bold mt-2 ${
-            (overview?.tempo_effettivo_totale || 0) <= (overview?.tempo_stimato_totale || 0) ? 'text-[#32D74B]' : 'text-[#FF3B30]'
+            (overview?.tempo_effettivo_totale || 0) <= (overview?.tempo_stimato_totale || 0) ? 'text-green-600' : 'text-red-500'
           }`}>
             {formatMinutes(overview?.tempo_effettivo_totale || 0)}
           </p>
         </div>
-        <div className="bg-[#141414] border border-white/10 rounded-sm p-5">
-          <p className="text-xs tracking-[0.2em] uppercase font-bold text-white/50">Efficienza</p>
+        <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+          <p className="text-xs tracking-wider uppercase font-bold text-gray-500">Efficienza</p>
           <div className="flex items-center gap-2 mt-2">
-            <p className={`text-2xl font-mono font-bold ${efficiency <= 100 ? 'text-[#32D74B]' : 'text-[#FF3B30]'}`}>
+            <p className={`text-2xl font-mono font-bold ${efficiency <= 100 ? 'text-green-600' : 'text-red-500'}`}>
               {efficiency}%
             </p>
             {efficiency < 100 ? (
-              <TrendUp size={20} className="text-[#32D74B]" />
+              <TrendUp size={20} className="text-green-600" />
             ) : efficiency > 100 ? (
-              <TrendDown size={20} className="text-[#FF3B30]" />
+              <TrendDown size={20} className="text-red-500" />
             ) : null}
           </div>
         </div>
-        <div className="bg-[#141414] border border-white/10 rounded-sm p-5">
-          <p className="text-xs tracking-[0.2em] uppercase font-bold text-white/50">Differenza</p>
+        <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+          <p className="text-xs tracking-wider uppercase font-bold text-gray-500">Differenza</p>
           <p className={`text-2xl font-mono font-bold mt-2 ${
-            (overview?.tempo_effettivo_totale || 0) <= (overview?.tempo_stimato_totale || 0) ? 'text-[#32D74B]' : 'text-[#FF3B30]'
+            (overview?.tempo_effettivo_totale || 0) <= (overview?.tempo_stimato_totale || 0) ? 'text-green-600' : 'text-red-500'
           }`}>
             {(overview?.tempo_effettivo_totale || 0) <= (overview?.tempo_stimato_totale || 0) ? '-' : '+'}
             {formatMinutes(Math.abs((overview?.tempo_effettivo_totale || 0) - (overview?.tempo_stimato_totale || 0)))}
@@ -238,43 +226,36 @@ const Report = () => {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Per Cliente Chart */}
-        <div className="bg-[#141414] border border-white/10 rounded-sm p-5">
-          <h3 className="font-heading text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <Users size={20} className="text-[#007AFF]" />
+        <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+          <h3 className="font-heading text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <Users size={20} className="text-blue-500" />
             Tempi per Cliente
           </h3>
           {perCliente.length === 0 ? (
-            <div className="h-64 flex items-center justify-center text-white/50">Nessun dato</div>
+            <div className="h-64 flex items-center justify-center text-gray-400">Nessun dato</div>
           ) : (
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={perCliente.slice(0, 8)} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                <XAxis 
-                  dataKey="cliente" 
-                  stroke="rgba(255,255,255,0.5)" 
-                  angle={-45} 
-                  textAnchor="end"
-                  height={60}
-                  tick={{ fontSize: 11 }}
-                />
-                <YAxis stroke="rgba(255,255,255,0.5)" tick={{ fontSize: 11 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="cliente" stroke="#6b7280" angle={-45} textAnchor="end" height={60} tick={{ fontSize: 11 }} />
+                <YAxis stroke="#6b7280" tick={{ fontSize: 11 }} />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
-                <Bar dataKey="tempo_stimato" name="Tempo Stimato" fill="#007AFF" radius={[2, 2, 0, 0]} />
-                <Bar dataKey="tempo_effettivo" name="Tempo Effettivo" fill="#32D74B" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="tempo_stimato" name="Tempo Stimato" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="tempo_effettivo" name="Tempo Effettivo" fill="#22c55e" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}
         </div>
 
         {/* Per Operazione Chart */}
-        <div className="bg-[#141414] border border-white/10 rounded-sm p-5">
-          <h3 className="font-heading text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <ChartBar size={20} className="text-[#007AFF]" />
+        <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+          <h3 className="font-heading text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <ChartBar size={20} className="text-blue-500" />
             Distribuzione Operazioni
           </h3>
           {perOperazione.length === 0 ? (
-            <div className="h-64 flex items-center justify-center text-white/50">Nessun dato</div>
+            <div className="h-64 flex items-center justify-center text-gray-400">Nessun dato</div>
           ) : (
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -286,7 +267,7 @@ const Report = () => {
                   cy="50%"
                   outerRadius={100}
                   label={({ operazione, percent }) => `${operazione} (${(percent * 100).toFixed(0)}%)`}
-                  labelLine={{ stroke: 'rgba(255,255,255,0.3)' }}
+                  labelLine={{ stroke: '#9ca3af' }}
                 >
                   {perOperazione.slice(0, 6).map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -300,23 +281,23 @@ const Report = () => {
       </div>
 
       {/* Timeline Chart */}
-      <div className="bg-[#141414] border border-white/10 rounded-sm p-5">
-        <h3 className="font-heading text-lg font-bold text-white mb-4 flex items-center gap-2">
-          <Clock size={20} className="text-[#007AFF]" />
+      <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+        <h3 className="font-heading text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <Clock size={20} className="text-blue-500" />
           Andamento nel Tempo
         </h3>
         {perPeriodo.length === 0 ? (
-          <div className="h-64 flex items-center justify-center text-white/50">Nessun dato nel periodo selezionato</div>
+          <div className="h-64 flex items-center justify-center text-gray-400">Nessun dato nel periodo selezionato</div>
         ) : (
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={perPeriodo} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-              <XAxis dataKey="data" stroke="rgba(255,255,255,0.5)" tick={{ fontSize: 11 }} />
-              <YAxis stroke="rgba(255,255,255,0.5)" tick={{ fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="data" stroke="#6b7280" tick={{ fontSize: 11 }} />
+              <YAxis stroke="#6b7280" tick={{ fontSize: 11 }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
-              <Line type="monotone" dataKey="tempo_stimato" name="Tempo Stimato" stroke="#007AFF" strokeWidth={2} dot={{ fill: '#007AFF' }} />
-              <Line type="monotone" dataKey="tempo_effettivo" name="Tempo Effettivo" stroke="#32D74B" strokeWidth={2} dot={{ fill: '#32D74B' }} />
+              <Line type="monotone" dataKey="tempo_stimato" name="Tempo Stimato" stroke="#3b82f6" strokeWidth={2} dot={{ fill: '#3b82f6' }} />
+              <Line type="monotone" dataKey="tempo_effettivo" name="Tempo Effettivo" stroke="#22c55e" strokeWidth={2} dot={{ fill: '#22c55e' }} />
             </LineChart>
           </ResponsiveContainer>
         )}
@@ -324,20 +305,20 @@ const Report = () => {
 
       {/* Per Operatore (Admin Only) */}
       {user?.role === 'admin' && perOperatore.length > 0 && (
-        <div className="bg-[#141414] border border-white/10 rounded-sm p-5">
-          <h3 className="font-heading text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <Users size={20} className="text-[#007AFF]" />
+        <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+          <h3 className="font-heading text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <Users size={20} className="text-blue-500" />
             Performance Operatori
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/10">
-                  <th className="text-left text-xs tracking-[0.1em] uppercase font-bold text-white/50 px-4 py-3">Operatore</th>
-                  <th className="text-center text-xs tracking-[0.1em] uppercase font-bold text-white/50 px-4 py-3">Schede</th>
-                  <th className="text-center text-xs tracking-[0.1em] uppercase font-bold text-white/50 px-4 py-3">Tempo Stimato</th>
-                  <th className="text-center text-xs tracking-[0.1em] uppercase font-bold text-white/50 px-4 py-3">Tempo Effettivo</th>
-                  <th className="text-center text-xs tracking-[0.1em] uppercase font-bold text-white/50 px-4 py-3">Efficienza</th>
+                <tr className="border-b border-gray-200 bg-gray-50">
+                  <th className="text-left text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3">Operatore</th>
+                  <th className="text-center text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3">Schede</th>
+                  <th className="text-center text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3">Tempo Stimato</th>
+                  <th className="text-center text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3">Tempo Effettivo</th>
+                  <th className="text-center text-xs tracking-wider uppercase font-bold text-gray-500 px-4 py-3">Efficienza</th>
                 </tr>
               </thead>
               <tbody>
@@ -346,17 +327,17 @@ const Report = () => {
                     ? Math.round((op.tempo_effettivo / op.tempo_stimato) * 100)
                     : 0;
                   return (
-                    <tr key={op.operatore} className="border-b border-white/5 hover:bg-white/5">
-                      <td className="px-4 py-3 text-white font-medium">{op.operatore}</td>
-                      <td className="px-4 py-3 text-center text-white">{op.schede_count}</td>
-                      <td className="px-4 py-3 text-center text-white/70 font-mono">{formatMinutes(op.tempo_stimato)}</td>
+                    <tr key={op.operatore} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="px-4 py-3 text-gray-900 font-medium">{op.operatore}</td>
+                      <td className="px-4 py-3 text-center text-gray-600">{op.schede_count}</td>
+                      <td className="px-4 py-3 text-center text-gray-600 font-mono">{formatMinutes(op.tempo_stimato)}</td>
                       <td className="px-4 py-3 text-center font-mono">
-                        <span className={op.tempo_effettivo <= op.tempo_stimato ? 'text-[#32D74B]' : 'text-[#FF3B30]'}>
+                        <span className={op.tempo_effettivo <= op.tempo_stimato ? 'text-green-600' : 'text-red-500'}>
                           {formatMinutes(op.tempo_effettivo)}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-center">
-                        <span className={`font-mono font-bold ${opEfficiency <= 100 ? 'text-[#32D74B]' : 'text-[#FF3B30]'}`}>
+                        <span className={`font-mono font-bold ${opEfficiency <= 100 ? 'text-green-600' : 'text-red-500'}`}>
                           {opEfficiency}%
                         </span>
                       </td>

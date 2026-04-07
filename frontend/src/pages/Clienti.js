@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getClienti, createCliente, updateCliente, deleteCliente } from '../services/api';
-import { Plus, PencilSimple, Trash, X, Check, User, Envelope, Phone, MapPin } from '@phosphor-icons/react';
+import { Plus, PencilSimple, Trash, Check, User, Envelope, Phone, MapPin } from '@phosphor-icons/react';
 import {
   Dialog,
   DialogContent,
@@ -93,7 +93,7 @@ const Clienti = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-pulse text-white/50">Caricamento...</div>
+        <div className="animate-pulse text-gray-500">Caricamento...</div>
       </div>
     );
   }
@@ -103,15 +103,15 @@ const Clienti = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
+          <h1 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-tight text-gray-900">
             Clienti
           </h1>
-          <p className="text-white/50 text-sm mt-1">{clienti.length} clienti registrati</p>
+          <p className="text-gray-500 text-sm mt-1">{clienti.length} clienti registrati</p>
         </div>
         <button
           onClick={() => openForm()}
           data-testid="add-cliente-button"
-          className="bg-[#007AFF] text-white font-bold rounded-sm px-5 py-2.5 hover:bg-[#3395FF] transition-colors flex items-center gap-2 w-fit"
+          className="bg-blue-500 text-white font-bold rounded-lg px-5 py-2.5 hover:bg-blue-600 transition-colors flex items-center gap-2 w-fit"
         >
           <Plus size={18} weight="bold" />
           Nuovo Cliente
@@ -120,12 +120,12 @@ const Clienti = () => {
 
       {/* Grid */}
       {clienti.length === 0 ? (
-        <div className="bg-[#141414] border border-white/10 rounded-sm p-12 text-center">
-          <User size={48} className="text-white/20 mx-auto mb-4" />
-          <p className="text-white/50 mb-4">Nessun cliente registrato</p>
+        <div className="bg-white border border-gray-200 rounded-lg p-12 text-center shadow-sm">
+          <User size={48} className="text-gray-300 mx-auto mb-4" />
+          <p className="text-gray-500 mb-4">Nessun cliente registrato</p>
           <button
             onClick={() => openForm()}
-            className="text-[#007AFF] hover:text-[#3395FF] font-medium inline-flex items-center gap-2"
+            className="text-blue-500 hover:text-blue-600 font-medium inline-flex items-center gap-2"
           >
             <Plus size={16} />
             Aggiungi il primo cliente
@@ -136,27 +136,27 @@ const Clienti = () => {
           {clienti.map((cliente) => (
             <div 
               key={cliente.id}
-              className="bg-[#141414] border border-white/10 rounded-sm p-5 card-hover"
+              className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#007AFF]/20 rounded-sm flex items-center justify-center">
-                    <User size={20} className="text-[#007AFF]" />
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <User size={20} className="text-blue-500" />
                   </div>
-                  <h3 className="font-heading text-lg font-bold text-white">{cliente.nome}</h3>
+                  <h3 className="font-heading text-lg font-bold text-gray-900">{cliente.nome}</h3>
                 </div>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => openForm(cliente)}
                     data-testid={`edit-cliente-${cliente.id}`}
-                    className="p-2 rounded-sm hover:bg-white/10 transition-colors text-white/50 hover:text-white"
+                    className="p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600"
                   >
                     <PencilSimple size={16} />
                   </button>
                   <button
                     onClick={() => setDeleteId(cliente.id)}
                     data-testid={`delete-cliente-${cliente.id}`}
-                    className="p-2 rounded-sm hover:bg-[#FF3B30]/10 transition-colors text-white/50 hover:text-[#FF3B30]"
+                    className="p-2 rounded-lg hover:bg-red-50 transition-colors text-gray-400 hover:text-red-500"
                   >
                     <Trash size={16} />
                   </button>
@@ -165,19 +165,19 @@ const Clienti = () => {
 
               <div className="space-y-2 text-sm">
                 {cliente.email && (
-                  <div className="flex items-center gap-2 text-white/60">
+                  <div className="flex items-center gap-2 text-gray-500">
                     <Envelope size={14} />
                     <span>{cliente.email}</span>
                   </div>
                 )}
                 {cliente.telefono && (
-                  <div className="flex items-center gap-2 text-white/60">
+                  <div className="flex items-center gap-2 text-gray-500">
                     <Phone size={14} />
                     <span>{cliente.telefono}</span>
                   </div>
                 )}
                 {cliente.indirizzo && (
-                  <div className="flex items-center gap-2 text-white/60">
+                  <div className="flex items-center gap-2 text-gray-500">
                     <MapPin size={14} />
                     <span>{cliente.indirizzo}</span>
                   </div>
@@ -190,55 +190,55 @@ const Clienti = () => {
 
       {/* Form Dialog */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="bg-[#141414] border-white/10 sm:max-w-md">
+        <DialogContent className="bg-white border-gray-200 sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-white font-heading">
+            <DialogTitle className="text-gray-900 font-heading">
               {editId ? 'Modifica Cliente' : 'Nuovo Cliente'}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 mt-4">
             <div>
-              <label className="block text-xs tracking-[0.2em] uppercase font-bold text-white/50 mb-2">Nome *</label>
+              <label className="block text-xs tracking-wider uppercase font-bold text-gray-500 mb-2">Nome *</label>
               <input
                 data-testid="cliente-nome-input"
                 type="text"
                 value={formData.nome}
                 onChange={(e) => setFormData(prev => ({ ...prev, nome: e.target.value }))}
-                className="w-full bg-[#0A0A0A] border border-white/20 text-white rounded-sm px-3 py-2.5 focus:ring-1 focus:ring-[#007AFF] focus:border-[#007AFF] placeholder:text-white/30"
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
                 placeholder="Nome azienda/cliente"
                 required
               />
             </div>
             <div>
-              <label className="block text-xs tracking-[0.2em] uppercase font-bold text-white/50 mb-2">Email</label>
+              <label className="block text-xs tracking-wider uppercase font-bold text-gray-500 mb-2">Email</label>
               <input
                 data-testid="cliente-email-input"
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                className="w-full bg-[#0A0A0A] border border-white/20 text-white rounded-sm px-3 py-2.5 focus:ring-1 focus:ring-[#007AFF] focus:border-[#007AFF] placeholder:text-white/30"
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
                 placeholder="email@esempio.com"
               />
             </div>
             <div>
-              <label className="block text-xs tracking-[0.2em] uppercase font-bold text-white/50 mb-2">Telefono</label>
+              <label className="block text-xs tracking-wider uppercase font-bold text-gray-500 mb-2">Telefono</label>
               <input
                 data-testid="cliente-telefono-input"
                 type="tel"
                 value={formData.telefono}
                 onChange={(e) => setFormData(prev => ({ ...prev, telefono: e.target.value }))}
-                className="w-full bg-[#0A0A0A] border border-white/20 text-white rounded-sm px-3 py-2.5 focus:ring-1 focus:ring-[#007AFF] focus:border-[#007AFF] placeholder:text-white/30"
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
                 placeholder="+39 123 456 7890"
               />
             </div>
             <div>
-              <label className="block text-xs tracking-[0.2em] uppercase font-bold text-white/50 mb-2">Indirizzo</label>
+              <label className="block text-xs tracking-wider uppercase font-bold text-gray-500 mb-2">Indirizzo</label>
               <input
                 data-testid="cliente-indirizzo-input"
                 type="text"
                 value={formData.indirizzo}
                 onChange={(e) => setFormData(prev => ({ ...prev, indirizzo: e.target.value }))}
-                className="w-full bg-[#0A0A0A] border border-white/20 text-white rounded-sm px-3 py-2.5 focus:ring-1 focus:ring-[#007AFF] focus:border-[#007AFF] placeholder:text-white/30"
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
                 placeholder="Via Roma 1, Milano"
               />
             </div>
@@ -246,14 +246,14 @@ const Clienti = () => {
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="border border-white/20 text-white font-bold rounded-sm px-5 py-2 hover:bg-white/5 transition-colors"
+                className="border border-gray-300 text-gray-700 font-bold rounded-lg px-5 py-2 hover:bg-gray-50 transition-colors"
               >
                 Annulla
               </button>
               <button
                 type="submit"
                 data-testid="save-cliente-button"
-                className="bg-[#007AFF] text-white font-bold rounded-sm px-5 py-2 hover:bg-[#3395FF] transition-colors flex items-center gap-2"
+                className="bg-blue-500 text-white font-bold rounded-lg px-5 py-2 hover:bg-blue-600 transition-colors flex items-center gap-2"
               >
                 <Check size={16} weight="bold" />
                 {editId ? 'Salva' : 'Crea'}
@@ -265,20 +265,20 @@ const Clienti = () => {
 
       {/* Delete Confirmation */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent className="bg-[#141414] border-white/10">
+        <AlertDialogContent className="bg-white border-gray-200">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-white">Conferma eliminazione</AlertDialogTitle>
-            <AlertDialogDescription className="text-white/60">
+            <AlertDialogTitle className="text-gray-900">Conferma eliminazione</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-500">
               Sei sicuro di voler eliminare questo cliente? Questa azione non può essere annullata.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-transparent border-white/20 text-white hover:bg-white/5">
+            <AlertDialogCancel className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50">
               Annulla
             </AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleDelete}
-              className="bg-[#FF3B30] text-white hover:bg-[#FF453A]"
+              className="bg-red-500 text-white hover:bg-red-600"
             >
               Elimina
             </AlertDialogAction>
