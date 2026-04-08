@@ -159,7 +159,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <RepartoCard 
           reparto="confezione"
-          label="Confezione"
+          label="Disponibilità"
           icon={Package}
           color="bg-blue-500"
           stats={confezioneStats}
@@ -168,7 +168,7 @@ const Dashboard = () => {
         />
         <RepartoCard 
           reparto="stampa"
-          label="Stampa"
+          label="Scarica"
           icon={Printer}
           color="bg-purple-500"
           stats={stampaStats}
