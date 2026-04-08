@@ -31,7 +31,8 @@ const SchedaForm = () => {
     operazioni: [],
     note: '',
     problemi: '',
-    stato: 'in_corso'
+    stato: 'in_corso',
+    tempo_stimato_totale: 0
   });
 
   useEffect(() => {
@@ -56,7 +57,8 @@ const SchedaForm = () => {
             operazioni: schedaRes.data.operazioni || [],
             note: schedaRes.data.note || '',
             problemi: schedaRes.data.problemi || '',
-            stato: schedaRes.data.stato
+            stato: schedaRes.data.stato,
+            tempo_stimato_totale: schedaRes.data.tempo_stimato_totale || 0
           });
         }
       } catch (e) {
@@ -72,9 +74,7 @@ const SchedaForm = () => {
     const newOp = {
       nome: template?.nome || 'Nuova Operazione',
       n_fogli: 0,
-      n_parti: 0,
       n_colli: 0,
-      tempo_stimato: 0,
       tempo_effettivo: 0,
       completata: false
     };
@@ -355,22 +355,13 @@ const SchedaForm = () => {
                     </div>
                   </div>
 
-                  <div className={`grid gap-3 ${showColliField(op.nome) ? 'grid-cols-2 md:grid-cols-5' : 'grid-cols-2 md:grid-cols-4'}`}>
+                  <div className={`grid gap-3 ${showColliField(op.nome) ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2'}`}>
                     <div>
                       <label className="block text-xs text-gray-500 mb-1">N. Fogli</label>
                       <input
                         type="number"
                         value={op.n_fogli || ''}
                         onChange={(e) => updateOperazione(index, 'n_fogli', parseInt(e.target.value) || 0)}
-                        className="w-full bg-white border border-gray-200 text-gray-900 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-500 mb-1">N. Parti</label>
-                      <input
-                        type="number"
-                        value={op.n_parti || ''}
-                        onChange={(e) => updateOperazione(index, 'n_parti', parseInt(e.target.value) || 0)}
                         className="w-full bg-white border border-gray-200 text-gray-900 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>
@@ -386,15 +377,6 @@ const SchedaForm = () => {
                       </div>
                     )}
                     <div>
-                      <label className="block text-xs text-gray-500 mb-1">Tempo Stim. (min)</label>
-                      <input
-                        type="number"
-                        value={op.tempo_stimato || ''}
-                        onChange={(e) => updateOperazione(index, 'tempo_stimato', parseInt(e.target.value) || 0)}
-                        className="w-full bg-white border border-gray-200 text-gray-900 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                    <div>
                       <label className="block text-xs text-gray-500 mb-1">Tempo Eff. (min)</label>
                       <input
                         type="number"
@@ -408,6 +390,22 @@ const SchedaForm = () => {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Tempo Stimato Totale */}
+        <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+          <h3 className="font-heading text-lg font-bold text-gray-900 mb-4">Tempo Stimato</h3>
+          <div className="max-w-xs">
+            <label className="block text-xs tracking-wider uppercase font-bold text-gray-500 mb-2">Tempo Stimato Totale (minuti)</label>
+            <input
+              type="number"
+              data-testid="tempo-stimato-totale-input"
+              value={formData.tempo_stimato_totale || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, tempo_stimato_totale: parseInt(e.target.value) || 0 }))}
+              className="w-full bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
+              placeholder="Es: 120"
+            />
+          </div>
         </div>
 
         {/* Notes */}

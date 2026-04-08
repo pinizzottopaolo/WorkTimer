@@ -112,6 +112,7 @@ class SchedaLavoroCreate(BaseModel):
     operazioni: List[OperazioneInput] = []
     note: Optional[str] = None
     problemi: Optional[str] = None
+    tempo_stimato_totale: Optional[int] = 0
 
 class SchedaLavoroUpdate(BaseModel):
     cliente_id: Optional[str] = None
@@ -124,6 +125,7 @@ class SchedaLavoroUpdate(BaseModel):
     note: Optional[str] = None
     problemi: Optional[str] = None
     stato: Optional[str] = None
+    tempo_stimato_totale: Optional[int] = None
 
 class SchedaLavoroOut(BaseModel):
     id: str
@@ -363,8 +365,9 @@ async def create_scheda(data: SchedaLavoroCreate, request: Request):
     
     now = datetime.now(timezone.utc)
     operazioni = [op.model_dump() for op in data.operazioni]
-    tempo_stimato = sum(op.get("tempo_stimato", 0) for op in operazioni)
     tempo_effettivo = sum(op.get("tempo_effettivo", 0) for op in operazioni)
+    # Usa il tempo_stimato_totale dal frontend se fornito, altrimenti 0
+    tempo_stimato = data.tempo_stimato_totale or 0
     
     doc = {
         "cliente_id": data.cliente_id,
@@ -446,8 +449,11 @@ async def update_scheda(scheda_id: str, data: SchedaLavoroUpdate, request: Reque
     
     if "operazioni" in update_data:
         operazioni = update_data["operazioni"]
-        update_data["tempo_totale_stimato"] = sum(op.get("tempo_stimato", 0) for op in operazioni)
         update_data["tempo_totale_effettivo"] = sum(op.get("tempo_effettivo", 0) for op in operazioni)
+    
+    # Aggiorna tempo_totale_stimato se fornito dal frontend
+    if "tempo_stimato_totale" in update_data:
+        update_data["tempo_totale_stimato"] = update_data.pop("tempo_stimato_totale")
     
     update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
     
