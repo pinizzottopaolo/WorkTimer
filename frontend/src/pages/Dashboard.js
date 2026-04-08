@@ -168,7 +168,7 @@ const Dashboard = () => {
         />
         <RepartoCard 
           reparto="stampa"
-          label="Scarica"
+          label="Confezione"
           icon={Printer}
           color="bg-purple-500"
           stats={stampaStats}
