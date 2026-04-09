@@ -31,6 +31,9 @@ const SchedaForm = () => {
     quantita: 0,
     quantita_effettiva: 0,
     resa: 0,
+    note_generali: '',
+    formato_stampa: '',
+    formato_finito: '',
     operazioni: [],
     note: '',
     problemi: '',
@@ -60,6 +63,9 @@ const SchedaForm = () => {
             quantita: schedaRes.data.quantita || 0,
             quantita_effettiva: schedaRes.data.quantita_effettiva || 0,
             resa: schedaRes.data.resa || 0,
+            note_generali: schedaRes.data.note_generali || '',
+            formato_stampa: schedaRes.data.formato_stampa || '',
+            formato_finito: schedaRes.data.formato_finito || '',
             operazioni: schedaRes.data.operazioni || [],
             note: schedaRes.data.note || '',
             problemi: schedaRes.data.problemi || '',
@@ -291,6 +297,42 @@ const SchedaForm = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, resa: parseInt(e.target.value) || 0 }))}
                 className="w-full bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
                 placeholder="Es: 98"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs tracking-wider uppercase font-bold text-gray-500 mb-2">Note</label>
+              <input
+                type="text"
+                data-testid="note-generali-input"
+                value={formData.note_generali || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, note_generali: e.target.value }))}
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
+                placeholder="Note generali"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs tracking-wider uppercase font-bold text-gray-500 mb-2">Formato Stampa</label>
+              <input
+                type="text"
+                data-testid="formato-stampa-input"
+                value={formData.formato_stampa || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, formato_stampa: e.target.value }))}
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
+                placeholder="Es: 50x70"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs tracking-wider uppercase font-bold text-gray-500 mb-2">Formato Finito</label>
+              <input
+                type="text"
+                data-testid="formato-finito-input"
+                value={formData.formato_finito || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, formato_finito: e.target.value }))}
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
+                placeholder="Es: 21x29.7"
               />
             </div>
           </div>

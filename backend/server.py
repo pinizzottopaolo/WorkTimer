@@ -112,6 +112,9 @@ class SchedaLavoroCreate(BaseModel):
     quantita: Optional[int] = 0
     quantita_effettiva: Optional[int] = 0
     resa: Optional[int] = 0
+    note_generali: Optional[str] = None
+    formato_stampa: Optional[str] = None
+    formato_finito: Optional[str] = None
     operazioni: List[OperazioneInput] = []
     note: Optional[str] = None
     problemi: Optional[str] = None
@@ -127,6 +130,9 @@ class SchedaLavoroUpdate(BaseModel):
     quantita: Optional[int] = None
     quantita_effettiva: Optional[int] = None
     resa: Optional[int] = None
+    note_generali: Optional[str] = None
+    formato_stampa: Optional[str] = None
+    formato_finito: Optional[str] = None
     operazioni: Optional[List[OperazioneInput]] = None
     note: Optional[str] = None
     problemi: Optional[str] = None
@@ -147,6 +153,9 @@ class SchedaLavoroOut(BaseModel):
     quantita: Optional[int] = 0
     quantita_effettiva: Optional[int] = 0
     resa: Optional[int] = 0
+    note_generali: Optional[str] = None
+    formato_stampa: Optional[str] = None
+    formato_finito: Optional[str] = None
     operazioni: List[dict]
     note: Optional[str] = None
     problemi: Optional[str] = None
@@ -391,6 +400,9 @@ async def create_scheda(data: SchedaLavoroCreate, request: Request):
         "quantita": data.quantita or 0,
         "quantita_effettiva": data.quantita_effettiva or 0,
         "resa": data.resa or 0,
+        "note_generali": data.note_generali,
+        "formato_stampa": data.formato_stampa,
+        "formato_finito": data.formato_finito,
         "operazioni": operazioni,
         "note": data.note,
         "problemi": data.problemi,
