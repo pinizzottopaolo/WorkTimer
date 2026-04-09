@@ -87,6 +87,7 @@ const SchedaForm = () => {
       nome: template?.nome || 'Nuova Operazione',
       n_fogli: 0,
       n_colli: 0,
+      tipo_carta: '',
       tempo_effettivo: 0,
       completata: false
     };
@@ -117,6 +118,12 @@ const SchedaForm = () => {
   const showColliField = (opName) => {
     const lower = opName.toLowerCase();
     return lower.includes('impacchett') || lower.includes('confezion') || lower.includes('colli');
+  };
+
+  // Mostra Tipo Carta solo per operazioni 1, 2, 3 Taglio
+  const showTipoCartaField = (opName) => {
+    const lower = opName.toLowerCase();
+    return lower.includes('1 taglio') || lower.includes('2 taglio') || lower.includes('3 taglio');
   };
 
   const handleSubmit = async (e) => {
@@ -439,7 +446,7 @@ const SchedaForm = () => {
                     </div>
                   </div>
 
-                  <div className={`grid gap-3 ${showColliField(op.nome) ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2'}`}>
+                  <div className={`grid gap-3 ${showColliField(op.nome) || showTipoCartaField(op.nome) ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2'}`}>
                     <div>
                       <label className="block text-xs text-gray-500 mb-1">N. Fogli</label>
                       <input
@@ -457,6 +464,18 @@ const SchedaForm = () => {
                           value={op.n_colli || ''}
                           onChange={(e) => updateOperazione(index, 'n_colli', parseInt(e.target.value) || 0)}
                           className="w-full bg-white border border-gray-200 text-gray-900 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </div>
+                    )}
+                    {showTipoCartaField(op.nome) && (
+                      <div>
+                        <label className="block text-xs text-gray-500 mb-1">Tipo Carta</label>
+                        <input
+                          type="text"
+                          value={op.tipo_carta || ''}
+                          onChange={(e) => updateOperazione(index, 'tipo_carta', e.target.value)}
+                          className="w-full bg-white border border-gray-200 text-gray-900 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          placeholder="Es: Patinata"
                         />
                       </div>
                     )}

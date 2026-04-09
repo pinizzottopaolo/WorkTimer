@@ -97,6 +97,7 @@ class OperazioneInput(BaseModel):
     n_fogli: Optional[int] = 0
     n_parti: Optional[int] = 0
     n_colli: Optional[int] = 0
+    tipo_carta: Optional[str] = None
     tempo_stimato: int = 0  # minuti
     tempo_effettivo: int = 0  # minuti
     timer_start: Optional[str] = None
