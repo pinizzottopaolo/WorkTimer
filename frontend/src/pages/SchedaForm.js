@@ -28,6 +28,9 @@ const SchedaForm = () => {
     n_ordine_cliente: '',
     n_ordine_interno: '',
     data_lavoro: format(new Date(), 'yyyy-MM-dd'),
+    quantita: 0,
+    quantita_effettiva: 0,
+    resa: 0,
     operazioni: [],
     note: '',
     problemi: '',
@@ -54,6 +57,9 @@ const SchedaForm = () => {
             n_ordine_cliente: schedaRes.data.n_ordine_cliente || '',
             n_ordine_interno: schedaRes.data.n_ordine_interno || '',
             data_lavoro: schedaRes.data.data_lavoro,
+            quantita: schedaRes.data.quantita || 0,
+            quantita_effettiva: schedaRes.data.quantita_effettiva || 0,
+            resa: schedaRes.data.resa || 0,
             operazioni: schedaRes.data.operazioni || [],
             note: schedaRes.data.note || '',
             problemi: schedaRes.data.problemi || '',
@@ -251,6 +257,42 @@ const SchedaForm = () => {
                 </select>
               </div>
             )}
+
+            <div>
+              <label className="block text-xs tracking-wider uppercase font-bold text-gray-500 mb-2">Quantità</label>
+              <input
+                type="number"
+                data-testid="quantita-input"
+                value={formData.quantita || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, quantita: parseInt(e.target.value) || 0 }))}
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
+                placeholder="Es: 1000"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs tracking-wider uppercase font-bold text-gray-500 mb-2">Quantità Effettiva</label>
+              <input
+                type="number"
+                data-testid="quantita-effettiva-input"
+                value={formData.quantita_effettiva || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, quantita_effettiva: parseInt(e.target.value) || 0 }))}
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
+                placeholder="Es: 980"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs tracking-wider uppercase font-bold text-gray-500 mb-2">Resa</label>
+              <input
+                type="number"
+                data-testid="resa-input"
+                value={formData.resa || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, resa: parseInt(e.target.value) || 0 }))}
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
+                placeholder="Es: 98"
+              />
+            </div>
           </div>
         </div>
 

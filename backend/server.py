@@ -109,6 +109,9 @@ class SchedaLavoroCreate(BaseModel):
     n_ordine_cliente: Optional[str] = None
     n_ordine_interno: Optional[str] = None
     data_lavoro: str
+    quantita: Optional[int] = 0
+    quantita_effettiva: Optional[int] = 0
+    resa: Optional[int] = 0
     operazioni: List[OperazioneInput] = []
     note: Optional[str] = None
     problemi: Optional[str] = None
@@ -121,6 +124,9 @@ class SchedaLavoroUpdate(BaseModel):
     n_ordine_cliente: Optional[str] = None
     n_ordine_interno: Optional[str] = None
     data_lavoro: Optional[str] = None
+    quantita: Optional[int] = None
+    quantita_effettiva: Optional[int] = None
+    resa: Optional[int] = None
     operazioni: Optional[List[OperazioneInput]] = None
     note: Optional[str] = None
     problemi: Optional[str] = None
@@ -138,6 +144,9 @@ class SchedaLavoroOut(BaseModel):
     n_ordine_cliente: Optional[str] = None
     n_ordine_interno: Optional[str] = None
     data_lavoro: str
+    quantita: Optional[int] = 0
+    quantita_effettiva: Optional[int] = 0
+    resa: Optional[int] = 0
     operazioni: List[dict]
     note: Optional[str] = None
     problemi: Optional[str] = None
@@ -379,6 +388,9 @@ async def create_scheda(data: SchedaLavoroCreate, request: Request):
         "n_ordine_cliente": data.n_ordine_cliente,
         "n_ordine_interno": data.n_ordine_interno,
         "data_lavoro": data.data_lavoro,
+        "quantita": data.quantita or 0,
+        "quantita_effettiva": data.quantita_effettiva or 0,
+        "resa": data.resa or 0,
         "operazioni": operazioni,
         "note": data.note,
         "problemi": data.problemi,
