@@ -116,6 +116,7 @@ class SchedaLavoroCreate(BaseModel):
     note_generali: Optional[str] = None
     formato_stampa: Optional[str] = None
     formato_finito: Optional[str] = None
+    tipo_carta: Optional[str] = None
     operazioni: List[OperazioneInput] = []
     note: Optional[str] = None
     problemi: Optional[str] = None
@@ -134,6 +135,7 @@ class SchedaLavoroUpdate(BaseModel):
     note_generali: Optional[str] = None
     formato_stampa: Optional[str] = None
     formato_finito: Optional[str] = None
+    tipo_carta: Optional[str] = None
     operazioni: Optional[List[OperazioneInput]] = None
     note: Optional[str] = None
     problemi: Optional[str] = None
@@ -157,6 +159,7 @@ class SchedaLavoroOut(BaseModel):
     note_generali: Optional[str] = None
     formato_stampa: Optional[str] = None
     formato_finito: Optional[str] = None
+    tipo_carta: Optional[str] = None
     operazioni: List[dict]
     note: Optional[str] = None
     problemi: Optional[str] = None
@@ -404,6 +407,7 @@ async def create_scheda(data: SchedaLavoroCreate, request: Request):
         "note_generali": data.note_generali,
         "formato_stampa": data.formato_stampa,
         "formato_finito": data.formato_finito,
+        "tipo_carta": data.tipo_carta,
         "operazioni": operazioni,
         "note": data.note,
         "problemi": data.problemi,

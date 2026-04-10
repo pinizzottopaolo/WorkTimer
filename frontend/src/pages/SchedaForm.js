@@ -34,6 +34,7 @@ const SchedaForm = () => {
     note_generali: '',
     formato_stampa: '',
     formato_finito: '',
+    tipo_carta: '',
     operazioni: [],
     note: '',
     problemi: '',
@@ -66,6 +67,7 @@ const SchedaForm = () => {
             note_generali: schedaRes.data.note_generali || '',
             formato_stampa: schedaRes.data.formato_stampa || '',
             formato_finito: schedaRes.data.formato_finito || '',
+            tipo_carta: schedaRes.data.tipo_carta || '',
             operazioni: schedaRes.data.operazioni || [],
             note: schedaRes.data.note || '',
             problemi: schedaRes.data.problemi || '',
@@ -340,6 +342,18 @@ const SchedaForm = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, formato_finito: e.target.value }))}
                 className="w-full bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
                 placeholder="Es: 21x29.7"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs tracking-wider uppercase font-bold text-gray-500 mb-2">Tipo Carta</label>
+              <input
+                type="text"
+                data-testid="tipo-carta-input"
+                value={formData.tipo_carta || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, tipo_carta: e.target.value }))}
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
+                placeholder="Es: Patinata 150g"
               />
             </div>
           </div>
