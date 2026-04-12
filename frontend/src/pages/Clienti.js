@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { getClienti, createCliente, updateCliente, deleteCliente } from '../services/api';
-import { Plus, PencilSimple, Trash, Check, User, Envelope, Phone, MapPin } from '@phosphor-icons/react';
+import { Plus, PencilSimple, Trash, Check, User, CaretDown, CaretRight } from '@phosphor-icons/react';
 import {
   Dialog,
   DialogContent,
@@ -24,6 +24,7 @@ const Clienti = () => {
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
+  const [expandedLetters, setExpandedLetters] = useState({});
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -35,6 +36,13 @@ const Clienti = () => {
     try {
       const res = await getClienti();
       setClienti(res.data);
+      // Espandi tutte le lettere di default
+      const letters = {};
+      res.data.forEach(c => {
+        const letter = c.nome.charAt(0).toUpperCase();
+        letters[letter] = true;
+      });
+      setExpandedLetters(letters);
     } catch (e) {
       console.error('Error fetching clienti:', e);
     } finally {
@@ -45,6 +53,31 @@ const Clienti = () => {
   useEffect(() => {
     fetchClienti();
   }, []);
+
+  // Raggruppa clienti per lettera iniziale
+  const groupedClienti = useMemo(() => {
+    const groups = {};
+    clienti.forEach(cliente => {
+      const letter = cliente.nome.charAt(0).toUpperCase();
+      if (!groups[letter]) {
+        groups[letter] = [];
+      }
+      groups[letter].push(cliente);
+    });
+    // Ordina le lettere alfabeticamente
+    const sortedGroups = {};
+    Object.keys(groups).sort().forEach(letter => {
+      sortedGroups[letter] = groups[letter].sort((a, b) => a.nome.localeCompare(b.nome));
+    });
+    return sortedGroups;
+  }, [clienti]);
+
+  const toggleLetter = (letter) => {
+    setExpandedLetters(prev => ({
+      ...prev,
+      [letter]: !prev[letter]
+    }));
+  };
 
   const openForm = (cliente = null) => {
     if (cliente) {
@@ -99,7 +132,7 @@ const Clienti = () => {
   }
 
   return (
-    <div className="space-y-6 fade-in">
+    <div className="space-y-4 fade-in">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -111,14 +144,14 @@ const Clienti = () => {
         <button
           onClick={() => openForm()}
           data-testid="add-cliente-button"
-          className="bg-blue-500 text-white font-bold rounded-lg px-5 py-2.5 hover:bg-blue-600 transition-colors flex items-center gap-2 w-fit"
+          className="bg-blue-500 text-white font-bold rounded-lg px-4 py-2 hover:bg-blue-600 transition-colors flex items-center gap-2 w-fit text-sm"
         >
-          <Plus size={18} weight="bold" />
+          <Plus size={16} weight="bold" />
           Nuovo Cliente
         </button>
       </div>
 
-      {/* Grid */}
+      {/* Lista raggruppata alfabeticamente */}
       {clienti.length === 0 ? (
         <div className="bg-white border border-gray-200 rounded-lg p-12 text-center shadow-sm">
           <User size={48} className="text-gray-300 mx-auto mb-4" />
@@ -132,57 +165,68 @@ const Clienti = () => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {clienti.map((cliente) => (
-            <div 
-              key={cliente.id}
-              className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-start justify-between mb-4">
+        <div className="space-y-2">
+          {Object.keys(groupedClienti).map((letter) => (
+            <div key={letter} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+              {/* Intestazione lettera */}
+              <button
+                onClick={() => toggleLetter(letter)}
+                className="w-full flex items-center justify-between px-4 py-2 bg-gray-50 hover:bg-gray-100 transition-colors"
+              >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <User size={20} className="text-blue-500" />
-                  </div>
-                  <h3 className="font-heading text-lg font-bold text-gray-900">{cliente.nome}</h3>
+                  <span className="w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold text-sm">
+                    {letter}
+                  </span>
+                  <span className="text-gray-600 text-sm font-medium">
+                    {groupedClienti[letter].length} client{groupedClienti[letter].length === 1 ? 'e' : 'i'}
+                  </span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => openForm(cliente)}
-                    data-testid={`edit-cliente-${cliente.id}`}
-                    className="p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600"
-                  >
-                    <PencilSimple size={16} />
-                  </button>
-                  <button
-                    onClick={() => setDeleteId(cliente.id)}
-                    data-testid={`delete-cliente-${cliente.id}`}
-                    className="p-2 rounded-lg hover:bg-red-50 transition-colors text-gray-400 hover:text-red-500"
-                  >
-                    <Trash size={16} />
-                  </button>
-                </div>
-              </div>
+                {expandedLetters[letter] ? (
+                  <CaretDown size={16} className="text-gray-400" />
+                ) : (
+                  <CaretRight size={16} className="text-gray-400" />
+                )}
+              </button>
 
-              <div className="space-y-2 text-sm">
-                {cliente.email && (
-                  <div className="flex items-center gap-2 text-gray-500">
-                    <Envelope size={14} />
-                    <span>{cliente.email}</span>
-                  </div>
-                )}
-                {cliente.telefono && (
-                  <div className="flex items-center gap-2 text-gray-500">
-                    <Phone size={14} />
-                    <span>{cliente.telefono}</span>
-                  </div>
-                )}
-                {cliente.indirizzo && (
-                  <div className="flex items-center gap-2 text-gray-500">
-                    <MapPin size={14} />
-                    <span>{cliente.indirizzo}</span>
-                  </div>
-                )}
-              </div>
+              {/* Lista clienti */}
+              {expandedLetters[letter] && (
+                <div className="divide-y divide-gray-100">
+                  {groupedClienti[letter].map((cliente) => (
+                    <div 
+                      key={cliente.id}
+                      className="flex items-center justify-between px-4 py-2 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <div className="w-7 h-7 bg-blue-100 rounded flex items-center justify-center flex-shrink-0">
+                          <User size={14} className="text-blue-500" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-gray-900 text-sm truncate">{cliente.nome}</p>
+                          {cliente.telefono && (
+                            <p className="text-xs text-gray-400 truncate">{cliente.telefono}</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                        <button
+                          onClick={() => openForm(cliente)}
+                          data-testid={`edit-cliente-${cliente.id}`}
+                          className="p-1.5 rounded hover:bg-gray-200 transition-colors text-gray-400 hover:text-gray-600"
+                        >
+                          <PencilSimple size={14} />
+                        </button>
+                        <button
+                          onClick={() => setDeleteId(cliente.id)}
+                          data-testid={`delete-cliente-${cliente.id}`}
+                          className="p-1.5 rounded hover:bg-red-100 transition-colors text-gray-400 hover:text-red-500"
+                        >
+                          <Trash size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
