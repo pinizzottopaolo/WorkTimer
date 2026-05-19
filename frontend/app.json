@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.paolopatagurro.frontend"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -32,6 +33,11 @@
         }
       ]
     ],
-    "scheme": "worktimer"
+    "scheme": "worktimer",
+    "extra": {
+      "eas": {
+        "projectId": "3e013c91-3d30-4eb9-adbb-f353baa75824"
+      }
+    }
   }
 }
