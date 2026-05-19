@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "WorkTimer",
-    "slug": "worktimer",
+    "slug": "frontend",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "ios": {
-      "supportsTabletMode": true
-    },
+    "ios": {},
     "android": {
       "versionCode": 1,
       "adaptiveIcon": {
